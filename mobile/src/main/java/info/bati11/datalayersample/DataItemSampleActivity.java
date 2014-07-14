@@ -25,7 +25,6 @@ import info.bati11.datalayersample.R;
 
 public class DataItemSampleActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, DataApi.DataListener {
 
-    private Handler handler;
     private GoogleApiClient mGoogleApiClient;
 
     private int count = 0;
@@ -38,8 +37,6 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
 
         textView = (TextView)findViewById(R.id.counter);
         textView.setText(Integer.toString(count));
-
-        handler = new Handler();
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
