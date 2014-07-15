@@ -37,9 +37,17 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        super.onPause();
     }
 
     public void increment(View v) {
