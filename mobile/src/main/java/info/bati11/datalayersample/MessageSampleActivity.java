@@ -1,17 +1,32 @@
 package info.bati11.datalayersample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import info.bati11.datalayersample.R;
+import android.widget.Toast;
 
-public class MessageSampleActivity extends Activity {
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
+
+public class MessageSampleActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_sample);
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addConnectionCallbacks(this)
+                .addApi(Wearable.API)
+                .build();
     }
 
 
@@ -32,5 +47,38 @@ public class MessageSampleActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("TAG", "onConnected");
+        Wearable.MessageApi.addListener(mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("TAG", "onConnectionSuspended");
+    }
+
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.d("TAG", "onMessageReceived");
+        final Context context = this;
+        if (messageEvent.getPath().equals("/messagesample")) {
+            final String messagePayload = new String(messageEvent.getData());
+            Log.d("TAG", messagePayload);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context , messagePayload, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }
