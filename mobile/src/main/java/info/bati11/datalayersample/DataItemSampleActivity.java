@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
@@ -14,7 +15,8 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.Wearable;
 
-public class DataItemSampleActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, DataApi.DataListener {
+public class DataItemSampleActivity extends Activity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -32,6 +34,7 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
     }
@@ -82,6 +85,11 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
     }
 
     @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e("TAG", "onConnectionFailed: " + connectionResult);
+    }
+
+    @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_DELETED) {
@@ -99,5 +107,4 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
             }
         }
     }
-
 }

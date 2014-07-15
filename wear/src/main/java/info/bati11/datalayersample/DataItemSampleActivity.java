@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -14,7 +15,8 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-public class DataItemSampleActivity extends Activity implements GoogleApiClient.ConnectionCallbacks {
+public class DataItemSampleActivity extends Activity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -32,6 +34,7 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
     }
@@ -75,6 +78,11 @@ public class DataItemSampleActivity extends Activity implements GoogleApiClient.
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("TAG", "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e("TAG", "onConnectionFailed: " + connectionResult);
     }
 }
 

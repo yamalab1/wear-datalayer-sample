@@ -8,12 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
-public class MessageSampleActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, MessageApi.MessageListener {
+public class MessageSampleActivity extends Activity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -25,6 +27,7 @@ public class MessageSampleActivity extends Activity implements GoogleApiClient.C
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(Wearable.API)
                 .build();
     }
@@ -73,6 +76,11 @@ public class MessageSampleActivity extends Activity implements GoogleApiClient.C
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("TAG", "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e("TAG", "onConnectionFailed: " + connectionResult);
     }
 
     @Override
